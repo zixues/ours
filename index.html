@@ -18,16 +18,12 @@ color:#ff4fa3;
 font-size:40px;
 }
 
-/* MONTH GRID */
-
 .months{
 display:grid;
 grid-template-columns:repeat(3,1fr);
 gap:20px;
 padding:20px;
 }
-
-/* MONTH CARD */
 
 .month{
 border-radius:15px;
@@ -37,8 +33,6 @@ background-size:cover;
 background-position:center;
 position:relative;
 }
-
-/* PINK OVERLAY */
 
 .month::before{
 content:"";
@@ -52,13 +46,9 @@ border-radius:15px;
 position:relative;
 }
 
-/* MONTH TITLE */
-
 .month h2{
 color:#ff4fa3;
 }
-
-/* DAYS */
 
 .days{
 display:grid;
@@ -77,8 +67,6 @@ font-size:14px;
 .day:hover{
 background:#ffc4de;
 }
-
-/* POPUP */
 
 .popup{
 position:fixed;
@@ -125,14 +113,17 @@ cursor:pointer;
 
 <script>
 
-/* LOAD NOTE FROM SHARED LINK */
+/* LOAD NOTE FROM SHARE LINK */
 
 const params=new URLSearchParams(window.location.search)
 
-if(params.get("date") && params.get("note")){
-let date=params.get("date")
-let note=decodeURIComponent(params.get("note"))
+if(params.get("d") && params.get("n")){
+
+let date=params.get("d")
+let note=atob(params.get("n"))
+
 localStorage.setItem(date,note)
+
 }
 
 /* MONTHS */
@@ -220,7 +211,7 @@ function closePopup(){
 document.getElementById("popup").style.display="none"
 }
 
-/* SAVE + CREATE SHARE LINK */
+/* SAVE + SHARE */
 
 function saveNote(){
 
@@ -233,10 +224,12 @@ return
 
 localStorage.setItem(currentKey,note)
 
-let encodedNote=encodeURIComponent(note)
+/* encode shorter */
+
+let encoded=btoa(note)
 
 let shareLink=
-`${window.location.origin}${window.location.pathname}?date=${currentKey}&note=${encodedNote}`
+`${window.location.origin}?d=${currentKey}&n=${encoded}`
 
 navigator.clipboard.writeText(shareLink)
 
