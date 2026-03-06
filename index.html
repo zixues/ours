@@ -8,104 +8,102 @@
 <style>
 
 body{
-    font-family: "Comic Sans MS", cursive;
-    background: linear-gradient(#ffd6e7,#fff0f6);
-    text-align:center;
+font-family:"Comic Sans MS",cursive;
+background:linear-gradient(#ffd6e7,#fff0f6);
+text-align:center;
 }
 
 h1{
-    color:#ff4fa3;
-    font-size:40px;
+color:#ff4fa3;
+font-size:40px;
 }
 
 /* MONTH GRID */
 
 .months{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:20px;
-    padding:20px;
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:20px;
+padding:20px;
 }
 
 /* MONTH CARD */
 
 .month{
-    border-radius:15px;
-    padding:10px;
-    box-shadow:0 5px 10px rgba(0,0,0,0.1);
-    background-size:cover;
-    background-position:center;
-    position:relative;
+border-radius:15px;
+padding:10px;
+box-shadow:0 5px 10px rgba(0,0,0,0.1);
+background-size:cover;
+background-position:center;
+position:relative;
 }
 
 /* PINK OVERLAY */
 
 .month::before{
-    content:"";
-    position:absolute;
-    inset:0;
-    background:rgba(255,255,255,0.75);
-    border-radius:15px;
+content:"";
+position:absolute;
+inset:0;
+background:rgba(255,255,255,0.75);
+border-radius:15px;
 }
 
-/* CONTENT ABOVE OVERLAY */
-
 .month-content{
-    position:relative;
+position:relative;
 }
 
 /* MONTH TITLE */
 
 .month h2{
-    color:#ff4fa3;
+color:#ff4fa3;
 }
 
-/* DAYS GRID */
+/* DAYS */
 
 .days{
-    display:grid;
-    grid-template-columns:repeat(7,1fr);
-    gap:5px;
+display:grid;
+grid-template-columns:repeat(7,1fr);
+gap:5px;
 }
 
 .day{
-    background:#ffe4f0;
-    border-radius:8px;
-    padding:8px;
-    cursor:pointer;
-    font-size:14px;
+background:#ffe4f0;
+border-radius:8px;
+padding:8px;
+cursor:pointer;
+font-size:14px;
 }
 
 .day:hover{
-    background:#ffc4de;
+background:#ffc4de;
 }
 
 /* POPUP */
 
 .popup{
-    position:fixed;
-    top:50%;
-    left:50%;
-    transform:translate(-50%,-50%);
-    background:white;
-    padding:20px;
-    border-radius:15px;
-    box-shadow:0 10px 30px rgba(0,0,0,0.2);
-    display:none;
+position:fixed;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%);
+background:white;
+padding:20px;
+border-radius:15px;
+box-shadow:0 10px 30px rgba(0,0,0,0.2);
+display:none;
 }
 
 textarea{
-    width:250px;
-    height:120px;
+width:250px;
+height:120px;
 }
 
 button{
-    background:#ff69b4;
-    border:none;
-    color:white;
-    padding:8px 15px;
-    border-radius:10px;
-    cursor:pointer;
+background:#ff69b4;
+border:none;
+color:white;
+padding:8px 15px;
+border-radius:10px;
+cursor:pointer;
 }
 
 </style>
@@ -127,14 +125,26 @@ button{
 
 <script>
 
-const months = [
+/* LOAD NOTE FROM SHARED LINK */
+
+const params=new URLSearchParams(window.location.search)
+
+if(params.get("date") && params.get("note")){
+let date=params.get("date")
+let note=decodeURIComponent(params.get("note"))
+localStorage.setItem(date,note)
+}
+
+/* MONTHS */
+
+const months=[
 "January","February","March","April","May","June",
 "July","August","September","October","November","December"
 ]
 
 /* BACKGROUND IMAGES */
 
-const monthImages = [
+const monthImages=[
 "cinnamons-pictures-v0-d6w87wsgx15d1.webp",
 "https://cdn-icons-png.flaticon.com/512/590/590685.png",
 "dear-daniel-1151-x-1155-wallpaper-0zaa55qwqav3wnc0.jpg",
@@ -149,16 +159,14 @@ const monthImages = [
 "360_F_121307795_jp2srJhjdheoITDYvBsDUOwBiaWZWph5.webp"
 ]
 
-const monthsDiv = document.getElementById("months")
+const monthsDiv=document.getElementById("months")
 
 months.forEach((month,mIndex)=>{
 
-let monthDiv = document.createElement("div")
+let monthDiv=document.createElement("div")
 monthDiv.className="month"
 
-/* SET BACKGROUND IMAGE */
-
-monthDiv.style.backgroundImage = `url(${monthImages[mIndex]})`
+monthDiv.style.backgroundImage=`url(${monthImages[mIndex]})`
 
 monthDiv.innerHTML=`
 <div class="month-content">
@@ -167,15 +175,15 @@ monthDiv.innerHTML=`
 </div>
 `
 
-let daysDiv = monthDiv.querySelector(".days")
+let daysDiv=monthDiv.querySelector(".days")
 
-for(let d=1; d<=31; d++){
+for(let d=1;d<=31;d++){
 
-let day = document.createElement("div")
+let day=document.createElement("div")
 day.className="day"
 day.innerText=d
 
-let key = `${month}-${d}`
+let key=`${month}-${d}`
 
 if(localStorage.getItem(key)){
 day.style.background="#ff9ccc"
@@ -212,13 +220,27 @@ function closePopup(){
 document.getElementById("popup").style.display="none"
 }
 
+/* SAVE + CREATE SHARE LINK */
+
 function saveNote(){
 
 let note=document.getElementById("note").value
 
+if(!note){
+alert("Write something first 💗")
+return
+}
+
 localStorage.setItem(currentKey,note)
 
-alert("Saved for your princess 💗")
+let encodedNote=encodeURIComponent(note)
+
+let shareLink=
+`${window.location.origin}${window.location.pathname}?date=${currentKey}&note=${encodedNote}`
+
+navigator.clipboard.writeText(shareLink)
+
+alert("Share link copied! Send it to your princess 💗")
 
 closePopup()
 
