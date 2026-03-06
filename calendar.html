@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Hello Kitty Love Notes 💗</title>
+
+<style>
+
+body{
+    font-family: "Comic Sans MS", cursive;
+    background: linear-gradient(#ffd6e7,#fff0f6);
+    text-align:center;
+}
+
+h1{
+    color:#ff4fa3;
+    font-size:40px;
+}
+
+/* MONTH GRID */
+
+.months{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:20px;
+    padding:20px;
+}
+
+/* MONTH CARD */
+
+.month{
+    border-radius:15px;
+    padding:10px;
+    box-shadow:0 5px 10px rgba(0,0,0,0.1);
+    background-size:cover;
+    background-position:center;
+    position:relative;
+}
+
+/* PINK OVERLAY */
+
+.month::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:rgba(255,255,255,0.75);
+    border-radius:15px;
+}
+
+/* CONTENT ABOVE OVERLAY */
+
+.month-content{
+    position:relative;
+}
+
+/* MONTH TITLE */
+
+.month h2{
+    color:#ff4fa3;
+}
+
+/* DAYS GRID */
+
+.days{
+    display:grid;
+    grid-template-columns:repeat(7,1fr);
+    gap:5px;
+}
+
+.day{
+    background:#ffe4f0;
+    border-radius:8px;
+    padding:8px;
+    cursor:pointer;
+    font-size:14px;
+}
+
+.day:hover{
+    background:#ffc4de;
+}
+
+/* POPUP */
+
+.popup{
+    position:fixed;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    background:white;
+    padding:20px;
+    border-radius:15px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.2);
+    display:none;
+}
+
+textarea{
+    width:250px;
+    height:120px;
+}
+
+button{
+    background:#ff69b4;
+    border:none;
+    color:white;
+    padding:8px 15px;
+    border-radius:10px;
+    cursor:pointer;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1>Love Notes for Everyday 💗</h1>
+
+<div class="months" id="months"></div>
+
+<div class="popup" id="popup">
+<h3 id="dateTitle"></h3>
+<textarea id="note"></textarea><br><br>
+<button onclick="saveNote()">Save 💕</button>
+<button onclick="closePopup()">Close</button>
+</div>
+
+<script>
+
+const months = [
+"January","February","March","April","May","June",
+"July","August","September","October","November","December"
+]
+
+/* BACKGROUND IMAGES */
+
+const monthImages = [
+"cinnamons-pictures-v0-d6w87wsgx15d1.webp",
+"https://cdn-icons-png.flaticon.com/512/590/590685.png",
+"dear-daniel-1151-x-1155-wallpaper-0zaa55qwqav3wnc0.jpg",
+"juicy-berry.webp",
+"my-melody-on-pink-sofa-pfp-s6uhjobhktlv3iwx.webp",
+"hello-kitty-performs-as-part-of-the-hello-kitty-40th-anniversary-parade-at-tokyos-sanrio.webp",
+"photo-1625870307943-1e3f5940c321.webp",
+"95fd199a2b8b577b8230a481e240715d.webp",
+"photo-1520034475321-cbe63696469a.webp",
+"bright-tulips-in-bloom.webp",
+"jesus-christ-flying-among-the-clouds-with-backlight-and-glorious-sky-photo.webp",
+"360_F_121307795_jp2srJhjdheoITDYvBsDUOwBiaWZWph5.webp"
+]
+
+const monthsDiv = document.getElementById("months")
+
+months.forEach((month,mIndex)=>{
+
+let monthDiv = document.createElement("div")
+monthDiv.className="month"
+
+/* SET BACKGROUND IMAGE */
+
+monthDiv.style.backgroundImage = `url(${monthImages[mIndex]})`
+
+monthDiv.innerHTML=`
+<div class="month-content">
+<h2>${month}</h2>
+<div class="days"></div>
+</div>
+`
+
+let daysDiv = monthDiv.querySelector(".days")
+
+for(let d=1; d<=31; d++){
+
+let day = document.createElement("div")
+day.className="day"
+day.innerText=d
+
+let key = `${month}-${d}`
+
+if(localStorage.getItem(key)){
+day.style.background="#ff9ccc"
+}
+
+day.onclick=()=>{
+openPopup(month,d)
+}
+
+daysDiv.appendChild(day)
+
+}
+
+monthsDiv.appendChild(monthDiv)
+
+})
+
+let currentKey=""
+
+function openPopup(month,day){
+
+currentKey=`${month}-${day}`
+
+document.getElementById("dateTitle").innerText=`${month} ${day}`
+
+document.getElementById("note").value=
+localStorage.getItem(currentKey) || ""
+
+document.getElementById("popup").style.display="block"
+
+}
+
+function closePopup(){
+document.getElementById("popup").style.display="none"
+}
+
+function saveNote(){
+
+let note=document.getElementById("note").value
+
+localStorage.setItem(currentKey,note)
+
+alert("Saved for your princess 💗")
+
+closePopup()
+
+location.reload()
+
+}
+
+</script>
+
+</body>
+</html>
